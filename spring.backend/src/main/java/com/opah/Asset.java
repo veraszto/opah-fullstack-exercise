@@ -175,17 +175,6 @@ public class Asset
 		}
 	}
 
-	public void log( Bundle bundle, String label )
-	{
-		log( label );
-		Set<String> set = bundle.keySet();
-		Iterator<String> iterator = set.iterator();
-		while( iterator.hasNext() == true )
-		{
-			log( iterator.next() );
-		}
-	}
-
 	public void log(List<?> list)
 	{
 		Iterator iter = list.iterator();

@@ -17,23 +17,21 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Request extends AsyncTask<JSONObject, Void, JSONObject>
+import java.nio.charset.StandardCharsets;
+
+public class Request
 {
 
 	private HttpsURLConnection http_url_connection;
 	public byte[] stream_byte_array;
-	private Callback callback;
-	private Asset asset = new Asset();
+	private com.opah.Asset asset = new com.opah.Asset();
 	//Get the default to request from movies
 	public String method = "GET";
 	public String url_string;
 	private boolean post_json_parse = true;
 
-
-
-	public Request( String url_string, Callback callback )
+	public Request( String url_string )
 	{
-		this.callback = callback;
 		this.url_string = url_string;
 		asset.log(url_string, "constructor Http");
 	};
@@ -43,33 +41,6 @@ public class Request extends AsyncTask<JSONObject, Void, JSONObject>
 		this.post_json_parse = parse;
 	}
 	
-	protected JSONObject doInBackground(JSONObject... args)
-	{
-		asset.log( "doInBackgroundHere");
-		try
-		{
-			return actionCore( args[ 0 ] );
-		}
-		catch(Exception e)
-		{
-			asset.log("Something happened in doInBackground", e);
-			return null;
-		}
-	}
-
-	protected void onPostExecute( JSONObject result )
-	{
-		try
-		{
-			this.callback.callback( result );
-			this.callback.callback( this );
-		}
-		catch( Exception exception )
-		{
-			asset.log( "Error calling callback", exception  );
-		}
-	}
-
 	private void makeHttpsURLConnectionReady( URL url ) 
 		throws Exception
 	{
@@ -95,13 +66,17 @@ public class Request extends AsyncTask<JSONObject, Void, JSONObject>
 		( 
 			String.format
 			(
-				"%s%s=%s", uppersand, key, android.net.Uri.encode( value )
+				"%s%s=%s", uppersand, key, 
+				java.net.URLEncoder.encode
+				( 
+					value, StandardCharsets.UTF_8.toString() 
+				)
 			)
 		);
 	}
 
 	//\actionCore
-	public JSONObject actionCore( JSONObject args ) 
+	public JSONObject make( JSONObject args ) 
 		throws Exception
 	{
 		JSONObject jo_response = new JSONObject();
@@ -179,15 +154,17 @@ public class Request extends AsyncTask<JSONObject, Void, JSONObject>
 		return jo_response;
 	}
 
-	private void buildResponse( JSONObject jo_response, String comment, Exception e )
+	private void buildResponse( JSONObject jo_response, String comment, Exception exception )
 		throws Exception
 	{
+		String error = String.format("Request error, %s", comment );
 		jo_response.put
 		(
-			this.asset.REQUEST_STATUS_DESCRIPTION,
-			String.format("Request error, %s", comment )
+			"error",
+			error
 		);
-		this.asset.log( comment, e );
+
+		this.asset.log( error, exception.toString() );
 	}
 
 
@@ -227,22 +204,5 @@ public class Request extends AsyncTask<JSONObject, Void, JSONObject>
 		this.stream_byte_array = response.toByteArray();
 		return response.toString();
 	}
-
-	public interface Callback
-	{
-		default void callback( JSONObject result ) 
-			throws Exception
-		{
-			//
-		};
-		default void callback(  Request request )
-			throws Exception
-		{
-			//
-		}
-	}
-
-
-
 
 }
