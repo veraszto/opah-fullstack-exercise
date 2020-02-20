@@ -22,7 +22,8 @@ public class BrokerController
 
 	com.opah.Asset asset = new com.opah.Asset();
 	private final BigDecimal commission = new BigDecimal("0.7");
-	private final String url = "https://cvcbackendhotel.herokuapp.com/hotels/avail/%s";
+//	private final String url = "https://cvcbackendhotel.herokuapp.com:443/hotels/avail/%s";
+	private final String url = "https://ifconfig.me/ip";
 
 	public BrokerController()
 	{
@@ -47,7 +48,7 @@ public class BrokerController
 			citycode.equals("none")
 		)
 		{
-			result.setResult( "{success:false, description:\"not enough input to proccess\"}" );
+			result.setResult( result( false, "Not enough input to proccess the request", "[]") );
 			return result;
 		}
 
@@ -61,7 +62,6 @@ public class BrokerController
 
 					Request request = new Request ( String.format( url, citycode ) );
 					request.postJSONParse( false );
-
 					JSONObject jo = request.make( new JSONObject() );
 
 					if ( ! jo.has("pure_response") )

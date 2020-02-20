@@ -40,16 +40,21 @@ public class Request
 	{
 		this.post_json_parse = parse;
 	}
-	
+
+	//\makeHttpsURLConnectionReady
 	private void makeHttpsURLConnectionReady( URL url ) 
 		throws Exception
 	{
 		asset.log( String.format("(%s) Preparing connection...)", url.toString() ));
 		this.http_url_connection = (HttpsURLConnection) url.openConnection();
-		this.http_url_connection.setAllowUserInteraction( true );
+//		http_url_connection.setRequestProperty("Accept", "*/*");
 		http_url_connection.setRequestMethod( this.method );
+		http_url_connection.setConnectTimeout( 10000 );
+		http_url_connection.setReadTimeout( 10000 );
+//		http_url_connection.setDoOutput( true );
+		//This is the default anyway
 		http_url_connection.setDoInput( true );
-		http_url_connection.setDoOutput( true );
+		this.http_url_connection.setAllowUserInteraction( true );
 	}
 
 	//\addToQuery
@@ -83,13 +88,7 @@ public class Request
 		jo_response.put("success", false);
 		StringBuilder post = new StringBuilder();
 
-		makeHttpsURLConnectionReady
-		(
-			new URL
-			(
-				this.url_string
-			)
-		);
+	
 
 		try
 		{
@@ -107,25 +106,26 @@ public class Request
 			return jo_response;
 		}
 
-		String response;
+		String response = send( post );
 
-		try
+		if ( response == null )
 		{
-			response = send( post );
-		}
-		catch(Exception e)
-		{
-			buildResponse( jo_response, "sending pack", e );
+			this.asset.log("response is null");
 			return jo_response;
 		}
+		if ( response.equals("") )
+		{
+			this.asset.log("response is empty");
+			return jo_response;
+		}
+		
 	
-
 		jo_response.put( "pure_response", response);
 
 		if ( post_json_parse == false )
 		{
 			jo_response.put("success", true);
-			asset.log( String.format("Imediate response, not a JSONString: %s", this.url_string ) );
+			asset.log( String.format("Imediate response, not a JSONString: %s", response ) );
 			return jo_response;
 		}
 		else
@@ -154,6 +154,7 @@ public class Request
 		return jo_response;
 	}
 
+	//\buildResponse
 	private void buildResponse( JSONObject jo_response, String comment, Exception exception )
 		throws Exception
 	{
@@ -164,45 +165,75 @@ public class Request
 			error
 		);
 
-		this.asset.log( error, exception.toString() );
+		this.asset.log( exception.toString(), error );
 	}
 
-
+	
+	//\send
 	private String send(StringBuilder post) throws Exception
 	{
-		String string_post_from_string_builder =  post.toString();
-
-		asset.log(String.format("ThePost(%d length): %s", post.length(), string_post_from_string_builder ));
-		asset.log("Flushing data...");
-		byte[] bytes = string_post_from_string_builder.getBytes();
-		string_post_from_string_builder = null;
-		this.http_url_connection.setFixedLengthStreamingMode(bytes.length);
-		OutputStream out = new BufferedOutputStream(http_url_connection.getOutputStream());
-		out.write(bytes, 0, bytes.length);
-		out.flush();
-		InputStream in = new BufferedInputStream(http_url_connection.getInputStream());
 		ByteArrayOutputStream response = new ByteArrayOutputStream();
-		int b;
+		InputStream in = null;
+		OutputStream out = null;
+		try
+		{
+			makeHttpsURLConnectionReady
+			(
+				new URL
+				(
+					this.url_string
+				)
+			);
 
-		while((b = in.read()) != -1)
-		{
-			response.write(b);
-		}
-		if (response != null)
-		{
-			response.close();
-		}
-		if (out != null)
-		{
-			out.close();
-		}
-		if (in != null)
-		{
-			in.close();
-		}
+			String string_post_from_string_builder =  post.toString();
+			asset.log(String.format("ThePost(%d length): %s", post.length(), string_post_from_string_builder ));
+			asset.log("Flushing data...");
+			byte[] bytes = string_post_from_string_builder.getBytes();
+			string_post_from_string_builder = null;
+			this.http_url_connection.setFixedLengthStreamingMode(bytes.length);
+			out = new BufferedOutputStream(http_url_connection.getOutputStream());
+			asset.log( http_url_connection.getResponseCode(), "ResponseCode");
+			/*
+			out.write(bytes, 0, bytes.length);
+			out.flush();
+			*/
+			in = new BufferedInputStream( http_url_connection.getInputStream() );
+			int a_byte;
 
-		this.stream_byte_array = response.toByteArray();
-		return response.toString();
+			while
+			(	
+				( a_byte = in.read() ) != -1
+			)
+			{
+				response.write( a_byte );
+			}
+			this.stream_byte_array = response.toByteArray();
+		}
+		catch( Exception exception )
+		{
+			this.asset.log( exception.toString(), "send method from Request error ");
+			exception.printStackTrace();
+			return null;
+		}
+		finally
+		{
+			if (response != null)
+			{
+				response.close();
+			}
+			if (out != null)
+			{
+				out.close();
+			}
+			if (in != null)
+			{
+				in.close();
+			}
+			http_url_connection.disconnect();
+			String stringed_response = response.toString();
+			asset.log( String.format("(%s)", stringed_response) );
+			return stringed_response;
+		}
 	}
 
 }
