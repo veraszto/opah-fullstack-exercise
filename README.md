@@ -1,5 +1,5 @@
 
-# Opah FullStack Challenge, Danilo G. Veraszto
+# Opah FullStack Challenge
 
 ## Descrição
 
@@ -9,7 +9,7 @@ App Spring instanciado dentro de container faz http para consultar hotéis e res
 
 HTML, CSS, JS, JAVA com Spring/SpringBoot, Docker, Git, Github.
 
-Confira meu perfil completo, [Danilo G. Veraszto](https://br.linkedin.com/in/danilo-g-veraszto-2bb2a1183)
+Confira meu perfil completo no [linkedin](https://br.linkedin.com/in/danilo-g-veraszto-2bb2a1183)
 
 
 ## Especificações
