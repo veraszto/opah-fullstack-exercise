@@ -16,19 +16,26 @@ plugins
 	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
 }
 
+test
+{
+	testLogging.showStandardStreams = true
+}
+
 group = "com.opah"
 version = "1.0"
 sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
 
-repositories {
+repositories 
+{
     // Use jcenter for resolving dependencies.
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
 	mavenCentral()
 }
 
-dependencies {
+dependencies 
+{
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:28.1-jre'
 	implementation 'org.springframework.boot:spring-boot-starter-web'

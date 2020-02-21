@@ -1,0 +1,202 @@
+:root
+{
+	--a_beautiful:Orange;
+	--a_orange:#d6863b;
+	--gray:#3e4347;
+	--a_magnificence:Purple;
+	--light:Grey;
+	--inputs-and-fa:2em;
+}
+
+.input-crib
+{
+padding:1em;
+border:1px solid var(--a_orange);
+border-bottom-width:0;
+color:black;
+position:relative;
+z-index:2;
+}
+
+.input-crib:last-of-type
+{
+border-bottom-width:1px;
+}
+
+/*****\Inputs******/
+.input-crib > input,
+.input-crib > select,
+.input-crib > textarea
+{
+width:95%;
+}
+
+.input-crib > input,
+.input-crib > select,
+.input-crib > textarea,
+.input-crib > input[type=checkbox] ~ span
+{
+font-family:Diavlo, Arial;
+font-size:var(--inputs-and-fa);
+color:var(--a_orange);
+display:block;
+height:1em;
+border:0;
+background:none;
+line-height:1;
+outline:none;
+}
+
+
+.input-crib > select
+{
+padding:.5em;
+height:2.5em;
+border:1px solid var(--a_orange);
+background-color:var(--a_gray);
+color:var(--a_orange);
+}
+
+.input-crib > textarea
+{
+height:5em;
+resize:none;
+border:1px solid var(--a_orange);
+}
+
+/*****\Placeholder******/
+
+.input-crib > aside.placeholder
+{
+display:none;
+font-size:.7em;
+float:left;
+animation-name:from-left;
+animation-duration:250ms;
+color:white;
+}
+
+.input-crib > input:not(:placeholder-shown) ~ aside.placeholder
+{
+display:block;
+}
+
+
+/*****\HelpAside******/
+
+.input-crib > aside.role-of-this-value
+{
+/*float:right;*/
+width:1em;
+height:1em;
+padding:.5em;
+border:1px solid var(--DarkOliveGreen);
+background-color:var(--a_orange);
+position:absolute;
+right:0;
+bottom:0;
+}
+
+.input-crib > aside.role-of-this-value:hover
+{
+width:auto;
+height:auto;
+}
+
+.input-crib > aside.role-of-this-value::before
+{
+content:"?";
+/*line-height:1em;*/
+text-align:center;
+display:block;
+}
+
+.input-crib > aside.role-of-this-value:hover::before
+{
+display:none;
+}
+
+.input-crib > aside.role-of-this-value > .clarification
+{
+display:none;
+}
+
+.input-crib > aside.role-of-this-value:hover > .clarification
+{
+display:block;
+}
+
+
+/*****\Checkbox******/
+
+.input-crib > input[type=checkbox] + label
+{
+display:block;
+width:var(--inputs-and-fa);
+height:var(--inputs-and-fa);
+background-color:var(--light);
+border:1px solid var(--a_magnificence);
+float:left;
+margin-right:var(--inputs-and-fa);
+text-align:center;
+}
+
+.input-crib > input[type=checkbox] + label::before
+{
+content:"";
+width:0;
+height:0;
+display:none;
+border-top-color:red;
+border-bottom-color:orange;
+border-left-color:yellow;
+border-right-color:blue;
+border-bottom-width:.5em;
+border-style:solid;
+border-width:.5em;
+}
+
+.input-crib > input[type=checkbox] + label ~ span
+{
+text-align:left;
+}
+
+.input-crib > input[type=checkbox] + label + span,
+.input-crib > input[type=checkbox]:checked + label + span + span
+{
+display:block;
+}
+
+.input-crib > input[type=checkbox]:checked + label::before
+{
+display:block;
+}
+
+.input-crib > input[type=checkbox],
+.input-crib > input[type=checkbox]:checked + label + span,
+.input-crib > input[type=checkbox] + label + span + span
+{
+display:none;
+}
+
+button
+{
+width:100%;
+background-color:var(--a_orange);
+padding:.25em;
+color:var(--gray);
+font-size:2em;
+font-family:'Diavlo', 'Arial';
+cursor:pointer;
+}
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,291 @@
+
+@font-face 
+{
+	font-family: 'Diavlo';
+	font-style: normal;
+	font-weight: normal;
+	src:  url('diavlo_book_ii_0-webfont.woff') format('woff');
+}
+
+html
+{
+height:100%;
+}
+
+
+body
+{
+	display:flex;
+	flex-direction:row;
+	justify-content:center;
+	align-items:center;
+	background-color:#3e4347;
+	height:100%;
+	margin:0;
+	font-family:'Diavlo';
+}
+
+
+form
+{
+animation-name:fadein;
+animation-duration:1000ms;
+display:block;
+}
+
+.request-response
+{
+display:none;
+height:100%;
+}
+
+.request-response > .container
+{
+overflow:auto;
+height:100%;
+}
+
+.request-response > .container > div
+{
+	padding:1em;
+	background-color:LightGray;
+}
+.request-response > .container > div:nth-child(even)
+{
+	background-color:gray;
+}
+
+.request-response > .container > div > div:first-child
+{
+font-size:1.25em;
+font-weight:bold;
+}
+
+.request-response > .container > div > div
+{
+padding:.5em;
+}
+
+.request-response > .container > div > div > span
+{
+font-size:1.5em;	
+font-weight:bold;
+color:var(--a_orange);
+}
+
+
+.main-container
+{
+padding:0 2em;
+}
+
+body.switch-to-show-response form
+{
+display:none;
+}
+
+body.switch-to-show-response .request-response
+{
+display:block;
+}
+
+body.switch-to-show-response .main-container
+{
+flex:1;
+height:50%;
+}
+
+
+.loader::before
+{
+content:"";
+background-color:orange;
+width:100%;
+height:100%;
+opacity:0;
+}
+
+.loader
+{
+position:fixed;
+left:0;
+top:0;
+right:0;
+bottom:0;
+}
+
+section.logo::after
+{
+content:"Danilo G. Veraszto";
+font-size:2em;
+display:block;
+}
+
+section.logo::before
+{
+content:"Opah FullStack Challenge";
+font-size:2.5em;
+}
+
+section.logo
+{
+color:var(--a_orange);
+position:fixed;
+top:1em;
+left:0;
+width:100%;
+text-align:center;
+background-image:url('../images/logo.png');
+background-position:5em center;
+background-size:auto 100%;
+background-repeat:no-repeat;
+height:6em;
+animation-name:fadein;
+animation-duration:1000ms;
+animation-delay:2s;
+animation-fill-mode:backwards;
+}
+
+
+
+
+/*******loader***********************************************************/
+
+body.loading > div.LOADER > div > svg
+{
+animation-name:thewheel;
+}
+
+body.loading > div.LOADER > div
+{
+animation-name:wheelfadein;
+opacity:0;
+}
+
+/*
+aside.flex-loader.loading > div.LOADER
+{
+display:block;
+}
+*/
+
+body.loading > div.LOADER
+{
+display:flex;
+}
+
+body.loading > div.LOADER::before
+{
+animation-name:expand;
+}
+
+body > div.LOADER::before
+{
+content:"";
+background-color:black;
+opacity:0.8;
+transform-origin:center;
+position:absolute;
+z-index:1;
+width:100%;
+height:100%;
+animation-duration:500ms;
+left:0;
+top:0;
+}
+
+body div.LOADER
+{
+position:fixed;
+left:0em;
+top:0em;
+z-index:5;
+display:none;
+width:100%;
+height:100%;
+flex-direction:row;
+justify-content:center;
+align-items:center;
+}
+
+body div.LOADER > div
+{
+position:relative;
+z-index:2;
+animation-duration:500ms;
+animation-delay:500ms;
+animation-fill-mode:forwards;
+width:10em;
+height:10em;
+}
+/*
+aside.flex-loader > div.LOADER
+{
+position:relative;
+}
+/*When not in the body*/
+/*
+ aside.flex-loader > div.LOADER > div
+{
+width:100%;
+height:100%;
+}
+*/
+
+body div.LOADER > div > svg
+{
+stroke:orange;
+fill:transparent;
+width:100%;
+height:auto;
+animation-duration:2s;
+animation-iteration-count:infinite;
+}
+
+
+@keyframes expand
+{
+	from
+	{
+		transform:scale(0);
+	}
+	to
+	{
+		transform:scale(1);
+	}
+}
+
+
+@keyframes wheelfadein
+{
+	from
+	{
+		transform:scale(1.5);
+		opacity:0;
+	}
+	to
+	{
+		transform:scale(1);
+		opacity:1;
+	}
+}
+@keyframes thewheel
+{
+	from
+	{
+		stroke-dasharray:200;
+	}
+	50%
+	{
+		stroke-dasharray:1000;
+	}
+	to
+	{
+		transform:rotate(1080deg);
+		stroke-dasharray:200;
+	}
+
+}
+
+/***end_loader***********************************************************/
+

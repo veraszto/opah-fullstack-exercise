@@ -1,0 +1,18 @@
+
+
+@keyframes fadein
+{
+	from
+	{
+		opacity:0;
+	}
+}
+
+
+@keyframes from-left
+{
+	from
+	{
+		transform:translateX(-100%);
+	}
+}

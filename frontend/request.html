@@ -1,0 +1,89 @@
+
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="stylesheet" type="text/css" href="css/animations.css" />
+	<link rel="stylesheet" type="text/css" href="css/low_cohesion.css" />
+	<link rel="stylesheet" type="text/css" href="css/opah.css" />
+
+	<script type="text/javascript" src="js/general.js">
+	</script>
+	<script type="text/javascript" src="js/low_cohesion.js">
+	</script>
+	<script type="text/javascript" src="js/opah.js">
+	</script>
+
+	<title>Request to SpringApp
+	</title>
+</head>
+
+<body>
+
+	<section class="logo">
+	</section>
+
+	<section class="main-container">
+		<form name="main" method="post">
+
+			<div class="input-crib">		
+				<select name="citycode">
+					<option value="9626">São Paulo
+					</option>
+					<option value="7110">Rio de Janeiro
+					</option>
+					<option value="1032">Porto Seguro
+					</option>
+				</select>
+				<aside class="placeholder">Entrance date
+				</aside>
+			</div>
+
+			<div class="input-crib">		
+				<input type="date" name="checkin" value="2020-02-21" />
+				<aside class="placeholder">Entrance date
+				</aside>
+			</div>
+			<div class="input-crib">		
+				<input type="date" name="checkout" value="2020-02-28" />
+				<aside class="placeholder">Leaving date
+				</aside>
+			</div>
+			<div class="input-crib">		
+				<input type="number" name="adults_count" value="2" min="1"  />
+				<aside class="placeholder">Adults count
+				</aside>
+			</div>
+			<div class="input-crib">		
+				<input type="number" name="children_count" value="5" min="0"  />
+				<aside class="placeholder" min="0" >Children count
+				</aside>
+			</div>
+			<button>Fetch
+			</button>
+		</form>
+
+		<article class="request-response">
+			<section class="container">
+			</section>
+			<button>Back</button>
+		</article>
+
+	</section>
+
+	<div class="LOADER">
+		<div>
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0,0,500,500">
+				<circle cx="250" cy="250" r="220" stroke-width="60" />
+			</svg>
+		</div>
+	</div>
+
+</body>
+
+
+</html>

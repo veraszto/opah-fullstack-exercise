@@ -7,17 +7,22 @@ import com.opah.net.Request;
 import java.math.BigDecimal;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import org.springframework.web.context.request.async.DeferredResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
+import java.util.regex.*;
+import java.util.Calendar;
 import java.math.RoundingMode;
+import java.time.temporal.ChronoUnit;
 
 
+@CrossOrigin
 @RestController
 public class BrokerController
 {
@@ -31,7 +36,7 @@ public class BrokerController
 	{
 	}
 
-	@GetMapping("/ask")
+	@PostMapping("/ask")
 	public DeferredResult<String> requestBroker
 	(
 		@RequestParam( value = "citycode", defaultValue = "9626" ) String citycode,
@@ -41,9 +46,17 @@ public class BrokerController
 		@RequestParam( value = "children_count", defaultValue = "5" ) String children_count
 	) 
 	{
-		this.asset.log("Has just received /ask request");
+		this.asset.log
+		( 
+			String.format
+			(
+				"Has just received /ask request, %s, %s, %s, %s, %s", 
+				citycode, checkin, checkout, adults_count, children_count
+			) 
+		);
 
 		final DeferredResult<String> result = new DeferredResult<>();
+		long days_interval = calculateDaysInterval( checkin, checkout );
 
 		if 
 		(
@@ -51,6 +64,11 @@ public class BrokerController
 		)
 		{
 			result.setResult( result( false, "Not enough input to proccess the request", "[]") );
+			return result;
+		}
+		if ( days_interval <= 0 )
+		{
+			result.setResult( result( false, "Dates are inverted", "[]") );
 			return result;
 		}
 		new Thread
@@ -73,12 +91,23 @@ public class BrokerController
 					}
 
 					JSONArray ja = new JSONArray( jo.getString( "pure_response" ) );
+
+					String json_result = 
+							BrokerController.this.initiateCalculation
+							( 
+								ja, checkin, checkout, 
+								Integer.valueOf( adults_count ), Integer.valueOf( children_count ),
+								days_interval
+							);
+					
+
 					result.setResult
 					( 
-						BrokerController.this.initiateCalculation
-						( 
-							ja, checkin, checkout, 
-							Integer.valueOf( adults_count ), Integer.valueOf( children_count )
+						result
+						(
+							true,
+							"ok",
+							json_result						
 						)
 					);
 				}
@@ -96,11 +125,10 @@ public class BrokerController
 	private String initiateCalculation
 			( 
 				JSONArray ja, String checkin, String checkout,  
-				int adults_count, int children_count 
+				int adults_count, int children_count, long days_interval
 			)
 			throws Exception
 	{
-		int days_interval = calculateDaysInterval( checkin, checkout );
 		int length = ja.length();
 		asset.log( String.format("Received %d hotels", length) );
 		for ( int i = 0 ; i < ja.length() ; i++ )
@@ -129,7 +157,7 @@ public class BrokerController
 
 	private String calculateValueSumWithDaysInterval
 			( 
-				int days_interval, int adults_count, int children_count, 
+				long days_interval, int adults_count, int children_count, 
 				float value_child, float value_adult
 			)
 	{
@@ -159,14 +187,48 @@ public class BrokerController
 	{
 		return String.format
 				(
-					"{success:%b, description:\"%s\", result:%s}", 
+					"{\"success\":%b, \"description\":\"%s\", \"result\":%s}", 
 					success, description, result 
 				);
 	}
 
-	private int calculateDaysInterval( String init, String end )
+	protected long calculateDaysInterval( String init, String end )
 	{
-		return 5;
+		long diff = 
+			ChronoUnit.DAYS.between
+			( 
+				makeCalendar( init ).toInstant(), makeCalendar( end ).toInstant()
+			);
+		return diff;
+	}
+
+	protected Calendar makeCalendar( String date )
+	{
+		String match_year = "^....";
+		String match_month = "....-(..)";
+		//Could also be this
+		//String match_month = "(?<=....-)..(?=-..)";
+		String match_day = "..$";
+
+
+		Calendar calendar = Calendar.getInstance();
+		int year = extractFromDate( match_year, date, 0, 0);
+		int month = extractFromDate( match_month, date, 1, -1 );
+		int day = extractFromDate( match_day, date, 0, 0 );
+		calendar.set( year, month, day );
+		return calendar;
+	}
+
+	protected int extractFromDate( String regex, String date, int group_index, int modifier )
+	{
+		Matcher match = asset.match( regex, date );
+
+		if ( match.find() )
+		{
+			return Integer.valueOf( match.group( group_index ) ) + modifier; 
+		}
+
+		return -1;
 	}
 
 }

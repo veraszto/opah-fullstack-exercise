@@ -5,10 +5,43 @@ package spring.backend;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
+import com.opah.Asset;
+import java.util.Calendar;
 
-public class AppTest {
-    @Test public void testAppHasAGreeting() {
+public class AppTest 
+{
+	/*
+    @Test 
+	public void testAppHasAGreeting() 
+	{
         App classUnderTest = new App();
         assertNotNull("app should have a greeting", classUnderTest.getGreeting());
     }
+	*/
+
+	Asset asset = new Asset();
+	private final String TIME_LAYOUT = "%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS";
+
+	@Test
+	public void StringToCalendar()
+	{
+		BrokerController broker = new BrokerController();
+		Calendar calendar = broker.makeCalendar("2022-01-17");
+		asset.log( String.format( TIME_LAYOUT, calendar ), "From String" );
+	}
+
+	@Test
+	public void testDates()
+	{
+		BrokerController broker = new BrokerController();
+		long diff = broker.calculateDaysInterval("2020-02-22", "2020-02-20");
+		asset.log( diff, "Diff" );
+	}
+
+	public void testExtractDate()
+	{
+		BrokerController broker = new BrokerController();
+		int date_content = broker.extractFromDate("....-(..)", "2020-02-22", 1, -1 );
+		assertEquals( 02, date_content );
+	}
 }

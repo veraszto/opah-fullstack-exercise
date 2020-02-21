@@ -91,6 +91,11 @@ public class Asset
 		return null;
 	}
 
+	public Matcher match( String regex, String against_to )
+	{
+		return Pattern.compile( regex ).matcher( against_to );
+	}
+
 	
 	public void log(String matter)
 	{

@@ -50,8 +50,8 @@ public class Request
 		http_url_connection.setRequestProperty("Accept", "*/*");
 //		http_url_connection.setRequestProperty("User-Agent", "curl/7.66.0");
 		http_url_connection.setRequestMethod( this.method );
-		http_url_connection.setConnectTimeout( 10000 );
-		http_url_connection.setReadTimeout( 10000 );
+		http_url_connection.setConnectTimeout( 20000 );
+		http_url_connection.setReadTimeout( 20000 );
 		http_url_connection.setDoOutput( true );
 		//This is the default anyway
 		http_url_connection.setDoInput( true );
