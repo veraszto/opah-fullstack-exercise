@@ -15,6 +15,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.math.RoundingMode;
+
 
 @RestController
 public class BrokerController
@@ -22,8 +24,8 @@ public class BrokerController
 
 	com.opah.Asset asset = new com.opah.Asset();
 	private final BigDecimal commission = new BigDecimal("0.7");
-//	private final String url = "https://cvcbackendhotel.herokuapp.com:443/hotels/avail/%s";
-	private final String url = "https://ifconfig.me/ip";
+	private final String url = "https://cvcbackendhotel.herokuapp.com:443/hotels/avail/%s";
+//	private final String url = "https://ifconfig.me/ip";
 
 	public BrokerController()
 	{
@@ -51,7 +53,6 @@ public class BrokerController
 			result.setResult( result( false, "Not enough input to proccess the request", "[]") );
 			return result;
 		}
-
 		new Thread
 		(
 			() -> 
@@ -63,6 +64,7 @@ public class BrokerController
 					Request request = new Request ( String.format( url, citycode ) );
 					request.postJSONParse( false );
 					JSONObject jo = request.make( new JSONObject() );
+					asset.log("Ask finished");
 
 					if ( ! jo.has("pure_response") )
 					{
@@ -85,6 +87,7 @@ public class BrokerController
 					BrokerController.this.asset.log( exception.toString(), "error new Thread http request" );
 				}
 			}
+
 		).start();
 
 		return result;
@@ -98,7 +101,8 @@ public class BrokerController
 			throws Exception
 	{
 		int days_interval = calculateDaysInterval( checkin, checkout );
-
+		int length = ja.length();
+		asset.log( String.format("Received %d hotels", length) );
 		for ( int i = 0 ; i < ja.length() ; i++ )
 		{
 			JSONObject jo = ja.getJSONObject( i );
@@ -106,15 +110,15 @@ public class BrokerController
 			
 			for ( int j = 0 ; j < ja_rooms.length() ; j++ )
 			{
-				JSONObject jo_room = ja.getJSONObject( j );
+				JSONObject jo_room = ja_rooms.getJSONObject( j );
 				jo_room.put
 				(
 					"totalPrice", 
 					calculateValueSumWithDaysInterval
 					( 
 						days_interval, adults_count, children_count,
-						jo_room.getJSONObject("price").getFloat("child"),
-						jo_room.getJSONObject("price").getFloat("adult") 
+						Float.valueOf( jo_room.getJSONObject("price").getFloat("child") ),
+						Float.valueOf( jo_room.getJSONObject("price").getFloat("adult") )
 					) 
 				);
 			}
@@ -135,8 +139,17 @@ public class BrokerController
 		BigDecimal value_child_bd = new BigDecimal( value_child );
 		BigDecimal value_adult_bd = new BigDecimal( value_adult );
 
-		BigDecimal children_cost = days_interval_bd.multiply( children_count_bd ).divide( commission );
-		BigDecimal adults_cost = days_interval_bd.multiply( adults_count_bd ).divide( commission );
+		BigDecimal children_cost = 
+			days_interval_bd
+			.multiply( children_count_bd )
+			.multiply( value_child_bd )
+			.divide( commission, 2, RoundingMode.HALF_UP  );
+
+		BigDecimal adults_cost = 
+			days_interval_bd
+			.multiply( adults_count_bd )
+			.multiply( value_adult_bd )
+			.divide( commission, 2, RoundingMode.HALF_UP  );
 
 		BigDecimal total_cost = adults_cost.add( children_cost );
 		return total_cost.toString();

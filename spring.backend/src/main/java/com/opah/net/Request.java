@@ -47,11 +47,12 @@ public class Request
 	{
 		asset.log( String.format("(%s) Preparing connection...)", url.toString() ));
 		this.http_url_connection = (HttpsURLConnection) url.openConnection();
-//		http_url_connection.setRequestProperty("Accept", "*/*");
+		http_url_connection.setRequestProperty("Accept", "*/*");
+//		http_url_connection.setRequestProperty("User-Agent", "curl/7.66.0");
 		http_url_connection.setRequestMethod( this.method );
 		http_url_connection.setConnectTimeout( 10000 );
 		http_url_connection.setReadTimeout( 10000 );
-//		http_url_connection.setDoOutput( true );
+		http_url_connection.setDoOutput( true );
 		//This is the default anyway
 		http_url_connection.setDoInput( true );
 		this.http_url_connection.setAllowUserInteraction( true );
@@ -125,12 +126,12 @@ public class Request
 		if ( post_json_parse == false )
 		{
 			jo_response.put("success", true);
-			asset.log( String.format("Imediate response, not a JSONString: %s", response ) );
+//			asset.log( String.format("Imediate response, not a JSONString: %s", response ) );
 			return jo_response;
 		}
 		else
 		{
-			asset.log( String.format("Imediate response: %s", response) );
+//			asset.log( String.format("Imediate response: %s", response) );
 		}
 
 		try
@@ -190,13 +191,16 @@ public class Request
 			asset.log("Flushing data...");
 			byte[] bytes = string_post_from_string_builder.getBytes();
 			string_post_from_string_builder = null;
+
+			//This below would make a post
+		/*
 			this.http_url_connection.setFixedLengthStreamingMode(bytes.length);
 			out = new BufferedOutputStream(http_url_connection.getOutputStream());
-			asset.log( http_url_connection.getResponseCode(), "ResponseCode");
-			/*
 			out.write(bytes, 0, bytes.length);
 			out.flush();
-			*/
+		*/
+
+			asset.log( http_url_connection.getResponseCode(), "ResponseCode");
 			in = new BufferedInputStream( http_url_connection.getInputStream() );
 			int a_byte;
 
@@ -229,9 +233,10 @@ public class Request
 			{
 				in.close();
 			}
+
 			http_url_connection.disconnect();
 			String stringed_response = response.toString();
-			asset.log( String.format("(%s)", stringed_response) );
+//			asset.log( String.format("(%s)", stringed_response) );
 			return stringed_response;
 		}
 	}
