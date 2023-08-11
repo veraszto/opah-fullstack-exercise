@@ -1,22 +1,11 @@
 
 # Opah FullStack Challenge
 
-## Descrição
+## Description
+Hi!
 
-Olá,
+This has been an exercise proposed by the company mentioned which I implemented and after my successful performance we signed our contract
 
-App Spring instanciado dentro de container faz http para consultar hotéis e responde o Ajax do front fazendo todos os cálculos.
+This repository holds a FullStack application with service integration in the backend with Java and Spring which brings a list of hotels, as suggested by the assessment, as response to the frontend request that displays them
 
-HTML, CSS, JS, JAVA com Spring/SpringBoot, Docker, Git, Github.
-
-Confira meu perfil completo no [linkedin](https://br.linkedin.com/in/danilo-g-veraszto-2bb2a1183)
-
-
-## Especificações
-
-A aplicação em Spring deve estar escutando na porta 8000.
-
-A requisição no front deverá partir da mesma máquina em que o AppSpring está.
-
-### Obrigado :)
 
